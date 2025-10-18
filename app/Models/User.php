@@ -4,12 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser; // <-- TAMBAHKAN INI
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
@@ -76,5 +78,27 @@ class User extends Authenticatable implements FilamentUser
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+        /**
+     * Mengambil pengguna yang dianggap online berdasarkan aktivitas sesi terakhir.
+     *
+     * @param int $minutes Batas waktu dalam menit untuk dianggap online (default: 5)
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getOnlineUsers(int $minutes = 5)
+    {
+        // Tentukan batas waktu (waktu sekarang - $minutes menit)
+        $threshold = Carbon::now()->subMinutes($minutes)->timestamp;
+
+        // Ambil user_id unik dari sesi yang aktif
+        $activeSessionUserIds = DB::table('sessions')
+            ->where('user_id', '!=', null) // Hanya sesi milik pengguna yang login
+            ->where('last_activity', '>=', $threshold) // Aktivitas terakhir dalam batas waktu
+            ->pluck('user_id') // Ambil hanya kolom user_id
+            ->unique();       // Pastikan setiap ID unik
+
+        // Ambil data user (hanya ID dan nama) berdasarkan ID yang ditemukan
+        return static::whereIn('id', $activeSessionUserIds)->get(['id', 'name']);
     }
 }
