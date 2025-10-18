@@ -7,6 +7,7 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser; // <-- TAMBAHKAN INI
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -70,5 +71,10 @@ class User extends Authenticatable implements FilamentUser
     {
         // Izinkan akses jika role_id adalah 1 (superadmin) ATAU 2 (admin)
         return in_array($this->role_id, [1, 2]);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(role::class);
     }
 }
