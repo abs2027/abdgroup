@@ -39,20 +39,20 @@ class RedirectBasedOnRole
      */
     public function handle(Authenticated $event): void
     {
-        $user = $event->user;
-        $redirectUrl = '';
+        // $user = $event->user;
+        // $redirectUrl = '';
 
-        // Aturan #1: Jika user adalah Super Admin (role_id = 1), siapkan tujuan ke /admin
-        if ($user->role_id == 1) {
-            $redirectUrl = '/admin';
-        }
-        // Aturan #2 & #3: Untuk semua role lain, siapkan tujuan ke /dashboard
-        else {
-            $redirectUrl = '/dashboard';
-        }
+        // // Aturan #1: Jika user adalah Super Admin (role_id = 1), siapkan tujuan ke /admin
+        // // if ($user->role_id == 1) {
+        // //     $redirectUrl = '/admin';
+        // // }
+        // // // Aturan #2 & #3: Untuk semua role lain, siapkan tujuan ke /dashboard
+        // // else {
+        // //     $redirectUrl = '/dashboard';
+        // // }
 
-        // Simpan tujuan ke dalam session. Fortify/Laravel akan otomatis
-        // menggunakan URL ini untuk mengarahkan user.
-        session(['url.intended' => $redirectUrl]);
+        // // // Simpan tujuan ke dalam session. Fortify/Laravel akan otomatis
+        // // // menggunakan URL ini untuk mengarahkan user.
+        // // session(['url.intended' => $redirectUrl]);
     }
 }
