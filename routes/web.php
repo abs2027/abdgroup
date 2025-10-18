@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
+use App\Livewire\Admin\Users\Create as CreateUser;
 
 Route::get('/', function () {
     return view('welcome');
