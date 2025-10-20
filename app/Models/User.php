@@ -77,4 +77,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function karyawan()
+    {
+        return $this->hasOne(Karyawan::class);
+    }
 }

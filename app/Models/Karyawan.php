@@ -36,4 +36,26 @@ class Karyawan extends Model
     {
         return $this->belongsTo(JabatanPosisi::class);
     }
+
+    public function lokasiPenempatan()
+    {
+        return $this->belongsTo(LokasiPenempatan::class);
+    }
+
+    public function scopeSearch($query, $value)
+    {
+        $query->where('nama_panjang', 'like', "%{$value}%")
+            ->orWhere('nomer_induk_karyawan', 'like', "%{$value}%");
+    }
+
+    public function dokumens()
+    {
+        return $this->hasMany(DokumenKaryawan::class);
+    }
+
+    // app/Models/Karyawan.php
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

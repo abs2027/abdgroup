@@ -5,11 +5,16 @@ namespace App\Livewire; // Pastikan namespace sudah benar
 use App\Models\JabatanPosisi;
 use App\Models\Karyawan;
 use App\Models\LokasiPenempatan;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 
+use Livewire\WithFileUploads;
+
 class KaryawanEdit extends Component
 {
+    use WithFileUploads;
+
     public Karyawan $karyawan;
 
     // Properti yang akan dihubungkan (binding) dengan input form
@@ -24,6 +29,8 @@ class KaryawanEdit extends Component
     public $status_karyawan;
     public $nama_kontak_darurat;
     public $hp_kontak_darurat;
+    public $nama_dokumen_baru;
+    public $file_dokumen_baru;
 
     protected function rules()
     {
@@ -79,5 +86,46 @@ class KaryawanEdit extends Component
             'semua_lokasi' => $semua_lokasi,
             'semua_jabatan' => $semua_jabatan,
         ])->layout('components.layouts.app'); // <-- INI YANG BENAR
+    }
+
+    public function uploadDokumen()
+    {
+        // 1. Validasi input
+        $this->validate([
+            'nama_dokumen_baru' => 'required|string|min:3',
+            'file_dokumen_baru' => 'required|file|mimes:pdf,jpg,png,doc,docx|max:2048', // Maks 2MB
+        ]);
+
+        // 2. Simpan file ke folder 'dokumen-karyawan' di dalam 'storage/app/public'
+        $path = $this->file_dokumen_baru->store('dokumen-karyawan', 'public');
+
+        // 3. Simpan informasi file ke database
+        $this->karyawan->dokumens()->create([
+            'nama_dokumen' => $this->nama_dokumen_baru,
+            'path_file' => $path,
+            'nama_asli_file' => $this->file_dokumen_baru->getClientOriginalName(),
+        ]);
+
+        // 4. Reset form upload dan kirim pesan sukses
+        $this->reset(['nama_dokumen_baru', 'file_dokumen_baru']);
+        session()->flash('message-dokumen', 'Dokumen berhasil diunggah.');
+    }
+
+    // [BARU] Fungsi untuk menghapus dokumen
+    public function deleteDokumen($dokumenId)
+    {
+        // 1. Temukan data dokumen di database
+        $dokumen = \App\Models\DokumenKaryawan::find($dokumenId);
+
+        if ($dokumen) {
+            // 2. Hapus file fisiknya dari storage
+            Storage::disk('public')->delete($dokumen->path_file);
+            
+            // 3. Hapus catatan datanya dari database
+            $dokumen->delete();
+
+            // 4. Kirim pesan sukses
+            session()->flash('message-dokumen', 'Dokumen berhasil dihapus.');
+        }
     }
 }
