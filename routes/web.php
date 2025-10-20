@@ -7,6 +7,11 @@ use App\Livewire\Admin\Users\Create as CreateUser;
 use App\Livewire\KaryawanEdit;
 use App\Livewire\MyProfile;
 
+// [PENAMBAHAN BARU] Import Controller yang kita buat di Langkah 1
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetCategoryController;
+
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -25,6 +30,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/karyawan', function () {
         return view('karyawan.index');
     })->name('karyawan.index');
+
+    // [PENAMBAHAN BARU] Route untuk Manajemen Aset
+    // Kita letakkan di dalam middleware 'auth' karena ini fitur internal
+    Route::resource('assets', AssetController::class);
+    Route::resource('asset_categories', AssetCategoryController::class);
+
 
     Route::get('/profil-saya', MyProfile::class)->name('my-profile');
 

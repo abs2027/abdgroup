@@ -4,16 +4,19 @@ namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\Attributes\Layout;
 
 class MyProfile extends Component
 {
+    public $karyawan;
+    public function mount()
+    {
+        // Ambil data dan simpan ke public property
+        $this->karyawan = Auth::user()->karyawan;
+    }
+
     public function render() 
     {
-        // Ambil data karyawan yang terhubung dengan user yang sedang login
-        $karyawan = Auth::user()->karyawan;
-
-        return view('livewire.my-profile', [
-            'karyawan' => $karyawan,
-        ])->layout('components.layouts.app'); // Gunakan layout utama
+       return view('livewire.my-profile');
     }
 }
