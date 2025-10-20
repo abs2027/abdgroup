@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
         // Jalankan RoleSeeder terlebih dahulu untuk memastikan roles ada
         $this->call([
             RoleSeeder::class,
+            LokasiPenempatanSeeder::class,
+            JabatanPosisiSeeder::class,
         ]);
 
         // Hanya jalankan seeder ini jika lingkungan BUKAN 'production'

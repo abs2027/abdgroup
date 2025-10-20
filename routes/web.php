@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 use App\Livewire\Admin\Users\Create as CreateUser;
+use App\Livewire\KaryawanEdit;
 
 Route::get('/', function () {
     return view('welcome');
@@ -12,6 +13,16 @@ Route::get('/', function () {
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('/karyawan/tambah', function () {
+    return view('karyawan.create'); // <-- Menunjuk ke file baru yang akan kita buat
+})->name('karyawan.create');
+
+Route::get('/karyawan', function () {
+    return view('karyawan.index');
+})->name('karyawan.index');
+
+Route::get('/karyawan/{karyawan}/edit', KaryawanEdit::class)->name('karyawan.edit');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

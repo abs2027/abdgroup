@@ -14,6 +14,8 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                    {{-- TAMBAHKAN BARIS INI --}}
+                    <flux:navlist.item icon="users" :href="route('karyawan.index')" :current="request()->routeIs('karyawan.*')" wire:navigate>Karyawan</flux:navlist.item>
                     @if(in_array(Auth::user()->role_id, [1, 2]))
                     <flux:navlist.item icon="shield-check" :href="url('/admin')" :current="request()->is('admin*')">{{ __('Panel Admin') }}</flux:navlist.item>
                     @endif
